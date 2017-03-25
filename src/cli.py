@@ -58,7 +58,7 @@ def create_argparse_intersect(subparsers):
             result.saveSTL('intersect.stl')
         elif output:
             with open(output, 'wb') as file:
-                result.saveSTL(output+'/intersect.stl')
+                result.saveSTL(output)
         else:
             assert False  # Error in logic
 
