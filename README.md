@@ -24,6 +24,23 @@ i            intersect of given STL files
 s            subtract of given STL files
 u            union of given STL files
 ```
+### Example
+For the stl files [jaws.stl](https://github.com/linganesan/3D-diff/blob/master/data/stl/jaws.stl) and [jaws2.stl](https://github.com/linganesan/3D-diff/blob/master/data/stl/jaws2.stl), we can generate result in three files: intersect.stl, subtract.stl, and union.stl representing the CSG operations performed on the arguments.
+
+```
+python cli.py i data/stl/jaws.stl data/stl/jaws2.stl -o data/intersect.stl
+```
+![intersect](https://github.com/linganesan/3D-diff/blob/master/data/screenshots/intersect.png)
+```
+python cli.py s data/stl/jaws.stl data/stl/jaws2.stl -o data/subtract.stl
+```
+![substract](https://github.com/linganesan/3D-diff/blob/master/data/screenshots/subtract.png)
+```
+python cli.py u data/stl/jaws.stl data/stl/jaws2.stl -o data/union.stl
+```
+![union](https://github.com/linganesan/3D-diff/blob/master/data/screenshots/union.png)
+
+
 
 # Similar Projects
 Other great watch libraries to try are:
