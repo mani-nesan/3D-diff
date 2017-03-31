@@ -6,12 +6,10 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-sys.path.insert(0, os.getcwd())
 
 from csg.core import CSG
 from csg.geom import Vertex, Vector
 
-from optparse import OptionParser
 
 Light = namedtuple('Light', ['num', 'ambient', 'diffuse', 'position'])
 
@@ -40,23 +38,15 @@ lights = [
 rot = 0.0
 
 class TestRenderable(object):
-    def __init__(self, filename, wireframe):
+    def __init__(self, obj):
         self.faces = []
         self.normals = []
         self.vertices = []
         self.colors = []
         self.vnormals = []
         self.list = -1
-        self.wireframe = wireframe
 
-        recursionlimit = sys.getrecursionlimit()
-        sys.setrecursionlimit(10000)
-        try:
-            obj = CSG.readSTL(filename)
-            polygons = obj.toPolygons()
-        except RuntimeError as e:
-            raise RuntimeError(e)
-        sys.setrecursionlimit(recursionlimit)
+        polygons = obj.toPolygons()
 
         for p in polygons:
             p.shared = [0.0, 1.0, 0.0, 1.0]
@@ -87,8 +77,6 @@ class TestRenderable(object):
         self.vnormals = ns
 
     def render(self):
-        if self.wireframe:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         if self.list < 0:
             self.list = glGenLists(1)
             glNewList(self.list, GL_COMPILE)
@@ -147,16 +135,14 @@ def display():
     glutSwapBuffers()
     glutPostRedisplay()
 
-if __name__ == '__main__':
-    parser = OptionParser()
-    parser.add_option('-w', '--wireframe', action='store_true')
-    (options, args) = parser.parse_args()
 
-    renderable = TestRenderable(args[0], options.wireframe)
 
+def show(obj):
+    global renderable
+    renderable = TestRenderable(obj)
     glutInit()
     glutInitWindowSize(640,480)
-    glutCreateWindow("STL Show")
+    glutCreateWindow("3D viewer")
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA)
     glutDisplayFunc(display)
 

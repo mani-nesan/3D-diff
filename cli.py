@@ -8,13 +8,15 @@ from argcomplete.completers import (
     FilesCompleter,
     # _wrapcall
 )
-import pkg_resources
 
-LOG = logging.getLogger(__name__)
-sys.path.insert(0, os.getcwd())
 
-from csg.core import CSG
-from csg.geom import Vertex, Vector
+dir =os.getcwd()
+print dir
+sys.path.append(dir+'/src')
+from core import loader
+from core import diff
+import viewer
+
 
 def create_argparse_intersect(subparsers):
     subparse = subparsers.add_parser(
@@ -44,23 +46,23 @@ def create_argparse_intersect(subparsers):
 
         recursionlimit = sys.getrecursionlimit()
         sys.setrecursionlimit(10000)
+
         try:
-            obj1 = CSG.readSTL(filename1)
-            obj2 = CSG.readSTL(filename2)
-            # polygons1 = obj1.toPolygons()
-            # polygons2 = obj2.toPolygons()
+            obj1=loader.load_stl(filename1)
+            obj2=loader.load_stl(filename2)
         except RuntimeError as e:
             raise RuntimeError(e)
         sys.setrecursionlimit(recursionlimit)
 
-        result = obj1.intersect(obj2)
+        result = diff.intersect(obj1,obj2)
         if not output:
-            result.saveSTL('intersect.stl')
+            loader.save_stl(result,'intersect.stl')
         elif output:
             with open(output, 'wb') as file:
-                result.saveSTL(output)
+                loader.save_stl(result,output+'/intersect.stl')
         else:
             assert False  # Error in logic
+        viewer.show(result)
 
     subparse.set_defaults(func=lambda args: intersect(
         args.path1,
@@ -97,22 +99,21 @@ def create_argparse_subtract(subparsers):
         recursionlimit = sys.getrecursionlimit()
         sys.setrecursionlimit(10000)
         try:
-            obj1 = CSG.readSTL(filename1)
-            obj2 = CSG.readSTL(filename2)
-            # polygons1 = obj1.toPolygons()
-            # polygons2 = obj2.toPolygons()
+            obj1=loader.load_stl(filename1)
+            obj2=loader.load_stl(filename2)
         except RuntimeError as e:
             raise RuntimeError(e)
         sys.setrecursionlimit(recursionlimit)
 
-        result = obj1.subtract(obj2)
+        result = diff.subtract(obj1,obj2)
         if not output:
-            result.saveSTL('subtract.stl')
+            loader.save_stl(result,'subtract.stl')
         elif output:
             with open(output, 'wb') as file:
-                result.saveSTL(output+'/subtract.stl')
+                loader.save_stl(result,output+'/subtract.stl')
         else:
             assert False  # Error in logic
+        viewer.show(result)
 
     subparse.set_defaults(func=lambda args: subtract(
         args.path1,
@@ -149,23 +150,21 @@ def create_argparse_union(subparsers):
         recursionlimit = sys.getrecursionlimit()
         sys.setrecursionlimit(10000)
         try:
-            obj1 = CSG.readSTL(filename1)
-            obj2 = CSG.readSTL(filename2)
-            # polygons1 = obj1.toPolygons()
-            # polygons2 = obj2.toPolygons()
+            obj1=loader.load_stl(filename1)
+            obj2=loader.load_stl(filename2)
         except RuntimeError as e:
             raise RuntimeError(e)
         sys.setrecursionlimit(recursionlimit)
 
-        result = obj1.union(obj2)
+        result = diff.union(obj1,obj2)
         if not output:
-            result.saveSTL('union.stl')
+            loader.save_stl(result,'union.stl')
         elif output:
             with open(output, 'wb') as file:
-                result.saveSTL(output+'/union.stl')
+                loader.save_stl(result,output+'/union.stl')
         else:
             assert False  # Error in logic
-
+        viewer.show(result)
     subparse.set_defaults(func=lambda args: union(
         args.path1,
         args.path2,
