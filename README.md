@@ -6,6 +6,8 @@ Still under development :P
 
 ## Install the dependencies:
 Just install https://github.com/revarbat/pycsg and it dependencies :)
+Edit: that repo was removed by the author, though I forked it here (https://github.com/mani-nesan/pycsg)
+
 
 ## Usage
  Run `python cli.py`. with arugements and options 
